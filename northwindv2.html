@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Northwind Products</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Northwind Products</h1>
+    <table id="productsTable">
+        <thead>
+            <tr>
+                <th>Product ID</th>
+                <th>Product Name</th>
+                <th>Category</th>
+                <th>Unit Price</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Products will be loaded here -->
+        </tbody>
+    </table>
+
+    <script>
+        async function fetchProducts() {
+            const response = await fetch('https://services.odata.org/V4/Northwind/Northwind.svc/Products?$expand=Category');
+            const data = await response.json();
+            
+            const productsTable = document.getElementById('productsTable').getElementsByTagName('tbody')[0];
+
+            data.value.forEach(product => {
+                const row = productsTable.insertRow();
+                row.insertCell(0).innerText = product.ProductID;
+                row.insertCell(1).innerText = product.ProductName;
+                row.insertCell(2).innerText = product.Category.CategoryName;
+                row.insertCell(3).innerText = `$${product.UnitPrice.toFixed(2)}`;
+            });
+        }
+
+        // Call the function to load products
+        fetchProducts();
+    </script>
+
+</body>
+</html>
